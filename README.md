@@ -17,7 +17,7 @@ In FlappyCat, users will be able to:
 This game will consist of a single screen with a space bar controlling the gravity of the cat. It will also have links
 to my GitHub and LinkedIn pages. Score will be displayed on the top and there will be a pause button on the top-right corner.
 
-![wireframes]('assets/FlappyCatWireFrame.png')
+![wireframes](assets/FlappyCatWireFrame.png)
 
 ### Architecture and Technologies
 
@@ -29,7 +29,7 @@ This project will be implemented with the following technologies:
 
 ### Implementation Timeline
 
-**Day 1**: Setup all necessary Node modules, including getting webpack up and running. Doing research on all the libraries I want to use including the physics engine I want to implement handling the gravitational logistics of my cat.
+**Day 1**: Setup all necessary Node modules, including getting webpack up and running. Doing research on all the libraries I want to use including the physics engine I want to implement, which will handle the gravitational logistics of my cat.
 
 **Day 2**: Work on rendering the board, cat, trees and pipes.
 
