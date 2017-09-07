@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style media="screen">
+      canvas {
+        display: flex;
+        border: 1px solid black;
+        margin: 0 auto;
+        background-image: url('assets/background/background.png');
+        background-size: cover;
+        background-position: left;
+      }
+    </style>
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d")
+
+        const ground = new Image();
+        ground.src = 'assets/background/foreground.png';
+        ground.height = 100;
+        // ground.onload = function() {
+        //   ctx.drawImage(ground, -50, 500, canvas.width + 100, ground.height * 2)
+        // }
+
+        let dx = -15;
+
+        window.setInterval(() => {
+          dx -= 1
+          if (dx < -50) {
+            dx = -5;
+          }
+          ctx.drawImage(ground, dx, 500, canvas.width + 100, ground.height * 2);
+        }, 5)
+
+        const pipeImg = new Image();
+        pipeImg.src = 'assets/pipe.png'
+
+        const catImage = new Image();
+        catImage.src = 'assets/runningcat.png'
+        class Sprite {
+
+          constructor(options) {
+            this.context = options.context;
+            this.image = options.image;
+            this.sX = options.sX;
+            this.sY = options.sY;
+            this.sWidth = options.sWidth;
+            this.sHeight = options.sHeight;
+            this.dX = options.dX;
+            this.dY = options.dY;
+            this.dWidth = options.dWidth;
+            this.dHeight = options.dHeight;
+            this.frameIndex = 0;
+            this.numFrames = options.numFrames || 2
+          }
+
+          render() {
+            this.image.onload = () => {
+              this.context.drawImage(
+                this.image,
+                this.sX,
+                this.sY,
+                this.sWidth,
+                this.sHeight,
+                this.dX,
+                this.dY,
+                this.dWidth,
+                this.dHeight
+              );
+            }
+          }
+
+        jump(e) {
+          this.context.clearRect(
+            this.dX,
+            this.dY,
+            this.dWidth,
+            this.dHeight
+          )
+          this.dY -= 20
+          this.context.drawImage(
+            this.image,
+            this.sX,
+            this.sY,
+            this.sWidth / this.numFrames   ,
+            this.sHeight,
+            this.dX,
+            this.dY,
+            this.dWidth,
+            this.dHeight
+          );
+        }
+
+        fall(e) {
+
+          this.context.clearRect(
+            this.dX,
+            this.dY,
+            this.dWidth,
+            this.dHeight
+          )
+          if (this.dY < 410 ) {
+            this.dY += 10
+          } else {
+            this.dY = this.dY;
+          }
+
+          this.frameIndex = this.frameIndex % this.numFrames
+          console.log(this.frameIndex)
+
+          this.sX = (this.frameIndex * this.sWidth) / (this.numFrames)
+          console.log(this.sX)
+
+          this.context.drawImage(
+            this.image,
+            this.sX,
+            this.sY,
+            this.sWidth / this.numFrames,
+            this.sHeight,
+            this.dX,
+            this.dY,
+            this.dWidth,
+            this.dHeight
+          )
+        }
+        }
+        const cat = new Sprite({
+          context: ctx,
+          image: catImage,
+          sX: 0,
+          sY: 515,
+          sWidth: 1000,
+          sHeight: 280,
+          dX: 150,
+          dY: 220,
+          dWidth: 100,
+          dHeight: 100
+        });
+
+
+        cat.render();
+        document.addEventListener('keypress', (e) => {
+          cat.jump(e);
+        })
+
+        window.setInterval(() => {
+          cat.frameIndex += 1
+          cat.fall()
+        }, 250)
+
+        class Pipe {
+
+          constructor(options) {
+            this.context = options.context;
+            this.image = options.image;
+            this.sX = options.sX;
+            this.sY = options.sY;
+            this.sWidth = options.sWidth;
+            this.sHeight = options.sHeight;
+            this.dX = options.dX;
+            this.dY = options.dY;
+            this.dWidth = options.dWidth;
+            this.dHeight = options.dHeight;
+            this.frameIndex = 0;
+            this.numFrames = options.numFrames || 2
+          }
+
+          render() {
+            this.image.onload = () => {
+              this.context.drawImage(
+                this.image,
+                this.sX,
+                this.sY,
+                this.sWidth,
+                this.sHeight,
+                this.dX,
+                this.dY,
+                this.dWidth,
+                this.dHeight
+              );
+            }
+          }
+        }
+        //
+        const Pipe = new Pipe({
+          context: ctx,
+          image: pipeImg,
+          sX: 0,
+          sY: 0,
+          sWidth: 500,
+          sHeight: 280,
+          dX: 150,
+          dY: 220,
+          dWidth: 100,
+          dHeight: 100
+        })
+
+      })
+
+
+
+    </script>
+    <title></title>
+  </head>
+  <body>
+    <canvas id="canvas" height="640" width="480"></canvas>
+  </body>
+</html>
