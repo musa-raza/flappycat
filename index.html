@@ -145,10 +145,6 @@
           cat.jump(e);
         })
 
-        window.setInterval(() => {
-          cat.frameIndex += 1
-          cat.fall()
-        }, 250)
 
         class Pipe {
 
@@ -167,8 +163,17 @@
             this.numFrames = options.numFrames || 2
           }
 
+          randomNumTop (x, y) {
+            return (Math.random() * ( (163-100) + 100));
+            debugger
+          }
+
+          pipeTop() {
+            this.frameIndex = 0;
+          }
+
           render() {
-            this.image.onload = () => {
+
               this.context.drawImage(
                 this.image,
                 this.sX,
@@ -181,10 +186,9 @@
                 this.dHeight
               );
             }
-          }
         }
         //
-        const Pipe = new Pipe({
+        const pipe = new Pipe({
           context: ctx,
           image: pipeImg,
           sX: 0,
@@ -197,6 +201,10 @@
           dHeight: 100
         })
 
+        window.setInterval(() => {
+          cat.frameIndex += 1
+          cat.fall()
+        }, 250)
       })
 
 
