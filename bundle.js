@@ -690,6 +690,7 @@ var GameView = function () {
     this.game = game;
     this.ctx.font = "42px Press Start 2P";
     this.ctx.fillStyle = "white";
+    this.addJump();
   }
 
   _createClass(GameView, [{
@@ -698,7 +699,6 @@ var GameView = function () {
 
       this.lastTime = 0;
       this.bird = this.game.addBird();
-      this.addJump();
       requestAnimationFrame(this.animate.bind(this));
     }
   }, {
