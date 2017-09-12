@@ -7,13 +7,12 @@
         display: flex;
         border: 1px solid black;
         margin: 0 auto;
-        background-image: url('assets/background/background.png');
-        background-size: cover;
-        background-position: left;
       }
     </style>
     <script type="text/javascript" src="./bundle.js">
     </script>
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./assets/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
     <link rel="stylesheet" href="assets/stylesheets/main.css">
@@ -23,18 +22,20 @@
     </div>
   </head>
   <body>
-    <canvas id="canvas" height="640" width="480"></canvas>
     <div class="modal game-div show">
       <div class="gameparent game-div show">
-          <div class="info game-div show">
-            <h2>Welcome to Flappy Cat!</h2>
-            <img src="./assets/spacebar.png"></img>
-            <p>Press spacebar to start the game and to jump. Avoid those pesky pipes!</p>
-            <span>
-              Musa Raza &#169;
-            </span>
-          </div>
+        <div class="info game-div show">
+          <h2>Welcome to Flappy Cat!</h2>
+          <img src="./assets/spacebar.png"></img>
+          <p>Press spacebar to start the game and to jump. Avoid those pesky pipes!</p>
+          <span>
+            Musa Raza &#169;
+          </span>
         </div>
+      </div>
+    </div>
+    <div class="canv-div">
+      <canvas id="canvas" height="640" width="480"></canvas>
     </div>
     <div class="footer-info">
       Musa Raza &#169;

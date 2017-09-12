@@ -1,12 +1,22 @@
+
+.canv-div {
+  padding-top: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #canvas {
   display: flex;
-  margin: auto;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   border-radius: 10px;
   box-shadow: 10px 10px 5px #888888;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin-top: 150px;
+  margin-bottom: 100px;
 }
 
 .hidden {
@@ -14,8 +24,6 @@
 }
 .modal {
   background: rgba(0, 0, 0, 0.5);
-  height: 100%;
-  width: 100%;
   position: fixed;
   top: 0;
   left: 0;
@@ -77,20 +85,22 @@ html {
   margin: auto;
   min-width: 100%;
   position: absolute;
+  padding-bottom: 50px;
 }
 
 .footer-info {
  display: flex;
  width: 100%;
- align-items: flex-end;
+ align-items: baseline;
  justify-content: space-around;
  font-family: "Press Start 2P";
  font-size: 20px;
  color: white;
- z-index: 100000;
  position: fixed;
  bottom: 0;
+ z-index: 100000;
  width: 100%;
+ margin-top: 100px;
  padding-bottom: 10px;
 }
 

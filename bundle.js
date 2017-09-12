@@ -98,6 +98,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
   document.addEventListener('keypress', window.startFlap);
+
+  window.changeBackground = function () {
+    var score = gameView.game.score % 10;
+    if (score === 0) {
+      canvas.style.background = "url(../assets/nightbg.png)";
+    }
+  };
 });
 
 /***/ }),
@@ -735,6 +742,7 @@ var GameView = function () {
         this.game.draw(this.ctx);
         this.lastTime = time;
         this.bird.fall(this.ctx);
+        window.changeBackground();
         requestAnimationFrame(this.animate.bind(this));
       } else if (!this.bird.alive) {
         this.startModal();
