@@ -60,55 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _game = __webpack_require__(3);
-
-var _game2 = _interopRequireDefault(_game);
-
-var _game_view = __webpack_require__(6);
-
-var _game_view2 = _interopRequireDefault(_game_view);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-document.addEventListener('DOMContentLoaded', function () {
-  var canvas = document.getElementById("canvas");
-  var ctx = canvas.getContext("2d");
-  canvas.width = _game2.default.DIM_X;
-  canvas.height = _game2.default.DIM_Y;
-  var game = new _game2.default();
-  var gameView = new _game_view2.default(game, ctx);
-
-  window.startFlap = function (e) {
-    if (e.keyCode === 32) {
-      var newerGame = new _game2.default();
-      gameView.game = newerGame;
-      gameView.closeModal();
-      gameView.startGame();
-      document.removeEventListener('keypress', window.startFlap);
-    }
-  };
-  document.addEventListener('keypress', window.startFlap);
-
-  window.changeBackground = function () {
-    var score = gameView.game.score % 10;
-    if (score === 0) {
-      canvas.style.background = "url(../assets/nightbg.png)";
-    }
-  };
-});
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -168,6 +124,64 @@ var Sprite = function () {
 exports.default = Sprite;
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _game = __webpack_require__(2);
+
+var _game2 = _interopRequireDefault(_game);
+
+var _game_view = __webpack_require__(6);
+
+var _game_view2 = _interopRequireDefault(_game_view);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+document.addEventListener('DOMContentLoaded', function () {
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  canvas.width = _game2.default.DIM_X;
+  canvas.height = _game2.default.DIM_Y;
+  var game = new _game2.default();
+  var gameView = new _game_view2.default(game, ctx);
+
+  window.gameoverMusic = function () {
+    var over = document.getElementById("oversound");
+    over.currentTime = 0;
+    over.play();
+  };
+
+  document.addEventListener('keypress', function (e) {
+    var over = document.getElementById("oversound");
+    var bgmusic = document.getElementById("bgmusic");
+    var jumpmusic = document.getElementById("jumpsound");
+    if (e.keyCode === 115 && !over.muted && !bgmusic.muted && !jumpmusic.muted) {
+      over.muted = true;
+      bgmusic.muted = true;
+      jumpmusic.muted = true;
+    } else if (e.keyCode === 115) {
+      over.muted = false;
+      bgmusic.muted = false;
+      jumpmusic.muted = false;
+    }
+  });
+
+  window.startFlap = function (e) {
+    if (e.keyCode === 32) {
+      var newerGame = new _game2.default();
+      gameView.game = newerGame;
+      gameView.closeModal();
+      gameView.startGame();
+      document.removeEventListener('keypress', window.startFlap);
+    }
+  };
+  document.addEventListener('keypress', window.startFlap, window.pause);
+});
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -180,92 +194,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _sprite = __webpack_require__(1);
+var _sprite = __webpack_require__(0);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Pipe = function (_Sprite) {
-  _inherits(Pipe, _Sprite);
-
-  function Pipe(options, game) {
-    _classCallCheck(this, Pipe);
-
-    var _this = _possibleConstructorReturn(this, (Pipe.__proto__ || Object.getPrototypeOf(Pipe)).call(this, options));
-
-    _this.image = options.image;
-    _this.sX = options.sX;
-    _this.sY = options.sY;
-    _this.sWidth = options.sWidth;
-    _this.sHeight = options.sHeight;
-    _this.dX = options.dX;
-    _this.dY = options.dY;
-    _this.dWidth = options.dWidth;
-    _this.dHeight = options.dHeight;
-    _this.frameIndex = 0;
-    _this.game = game;
-    _this.numFrames = options.numFrames || 2;
-    var mid = 502 + _this.dY;
-    _this.topPipeY = mid - 62;
-    _this.botPipeY = mid + 62;
-    return _this;
-  }
-
-  _createClass(Pipe, [{
-    key: 'move',
-    value: function move() {
-      this.dX -= 4;
-
-      if (this.game.outOfBounds(this.dX)) {
-        this.game.remove(this);
-      }
-    }
-  }, {
-    key: 'draw',
-    value: function draw(ctx) {
-      ctx.drawImage(this.image, this.sX, this.sY, this.sWidth, this.sHeight, this.dX, this.dY, this.dWidth, this.dHeight);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      this.image.onload = function () {
-        _this2.draw();
-      };
-    }
-  }]);
-
-  return Pipe;
-}(_sprite2.default);
-
-exports.default = Pipe;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _sprite = __webpack_require__(1);
-
-var _sprite2 = _interopRequireDefault(_sprite);
-
-var _pipe = __webpack_require__(2);
+var _pipe = __webpack_require__(3);
 
 var _pipe2 = _interopRequireDefault(_pipe);
 
@@ -484,6 +417,87 @@ Game.NUM_PIPES = 100;
 exports.default = Game;
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _sprite = __webpack_require__(0);
+
+var _sprite2 = _interopRequireDefault(_sprite);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Pipe = function (_Sprite) {
+  _inherits(Pipe, _Sprite);
+
+  function Pipe(options, game) {
+    _classCallCheck(this, Pipe);
+
+    var _this = _possibleConstructorReturn(this, (Pipe.__proto__ || Object.getPrototypeOf(Pipe)).call(this, options));
+
+    _this.image = options.image;
+    _this.sX = options.sX;
+    _this.sY = options.sY;
+    _this.sWidth = options.sWidth;
+    _this.sHeight = options.sHeight;
+    _this.dX = options.dX;
+    _this.dY = options.dY;
+    _this.dWidth = options.dWidth;
+    _this.dHeight = options.dHeight;
+    _this.frameIndex = 0;
+    _this.game = game;
+    _this.numFrames = options.numFrames || 2;
+    var mid = 502 + _this.dY;
+    _this.topPipeY = mid - 62;
+    _this.botPipeY = mid + 62;
+    return _this;
+  }
+
+  _createClass(Pipe, [{
+    key: 'move',
+    value: function move() {
+      this.dX -= 4;
+
+      if (this.game.outOfBounds(this.dX)) {
+        this.game.remove(this);
+      }
+    }
+  }, {
+    key: 'draw',
+    value: function draw(ctx) {
+      ctx.drawImage(this.image, this.sX, this.sY, this.sWidth, this.sHeight, this.dX, this.dY, this.dWidth, this.dHeight);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      this.image.onload = function () {
+        _this2.draw();
+      };
+    }
+  }]);
+
+  return Pipe;
+}(_sprite2.default);
+
+exports.default = Pipe;
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -496,7 +510,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _sprite = __webpack_require__(1);
+var _sprite = __webpack_require__(0);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
@@ -595,6 +609,7 @@ var Bird = function (_Sprite) {
       if ((this.dY + 10 < pipe.topPipeY || this.dY - 5 > pipe.botPipeY || this.dY - 20 + this.dHeight > pipe.botPipeY) && (this.dX - 5 + this.dWidth > pipe.dX && this.dX - 5 + this.dWidth < pipe.dX + pipe.dWidth || this.dX - 5 > pipe.dX && this.dX - 5 < pipe.dX + pipe.dWidth) || this.dY - 5 + this.dHeight >= 598) {
         this.alive = false;
         this.game.over = true;
+        window.gameoverMusic();
       }
     }
   }]);
@@ -617,7 +632,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _sprite = __webpack_require__(1);
+var _sprite = __webpack_require__(0);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
@@ -697,15 +712,18 @@ var GameView = function () {
     this.game = game;
     this.ctx.font = "42px Press Start 2P";
     this.ctx.fillStyle = "white";
+    this.addJump = this.addJump.bind(this);
     this.addJump();
   }
 
   _createClass(GameView, [{
     key: "startGame",
     value: function startGame() {
-
+      var bgmusic = document.getElementById("bgmusic");
+      bgmusic.currentTime = 0;
       this.lastTime = 0;
       this.bird = this.game.addBird();
+      this.backgroundMusic();
       requestAnimationFrame(this.animate.bind(this));
     }
   }, {
@@ -713,9 +731,21 @@ var GameView = function () {
     value: function addJump() {
       var _this = this;
 
+      var jumpmusic = document.getElementById("jumpsound");
+      jumpmusic.volume = 0.1;
       document.addEventListener('keypress', function (e) {
-        _this.bird.jump(e, _this.ctx);
+        if (e.keyCode === 32) {
+          _this.bird.jump(e, _this.ctx);
+          jumpmusic.play();
+        }
+        // jumpmusic.currentTime = 0;
       });
+    }
+  }, {
+    key: "endBgMusic",
+    value: function endBgMusic() {
+      var bgmusic = document.getElementById("bgmusic");
+      bgmusic.pause();
     }
   }, {
     key: "startModal",
@@ -724,6 +754,13 @@ var GameView = function () {
       [].forEach.call(modal, function (el) {
         el.className = el.className.replace('hidden', 'show');
       });
+    }
+  }, {
+    key: "backgroundMusic",
+    value: function backgroundMusic() {
+      var bgmusic = document.getElementById("bgmusic");
+      bgmusic.volume = 0.3;
+      bgmusic.play();
     }
   }, {
     key: "closeModal",
@@ -742,10 +779,10 @@ var GameView = function () {
         this.game.draw(this.ctx);
         this.lastTime = time;
         this.bird.fall(this.ctx);
-        window.changeBackground();
         requestAnimationFrame(this.animate.bind(this));
       } else if (!this.bird.alive) {
         this.startModal();
+        this.endBgMusic();
         document.addEventListener('keypress', window.startFlap);
       }
     }

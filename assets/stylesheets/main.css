@@ -91,9 +91,10 @@ html {
 .footer-info {
  display: flex;
  width: 100%;
- align-items: baseline;
+ align-items: center;
  justify-content: space-around;
  font-family: "Press Start 2P";
+ background: #73E0FF;
  font-size: 20px;
  color: white;
  position: fixed;
@@ -101,7 +102,6 @@ html {
  z-index: 100000;
  width: 100%;
  margin-top: 100px;
- padding-bottom: 10px;
 }
 
 .footer-info i {
