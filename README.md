@@ -1,44 +1,41 @@
 # FlappyCat
 
-### Background
+### Live Demo
 
-FlappyCat is an infinite runner that is rendered in 2D.
+[FlappyCat](https://musa-raza.github.io/flappycat/)
 
-### Functionality & MVP
+### Context
 
-In FlappyCat, users will be able to:
+FlappyCat is a browser game inspired by the extremely hard game from not too long ago, FlappyBird.
+
+### Functionality
+
+In FlappyCat, users are able to:
 
 - [ ] Start and pause the game.
-- [ ] Keep flapping the cat's wings to stay afloat.
-- [ ] Be able to avoid obstacles.
+- [ ] Keep flapping the cat to stay afloat.
+- [ ] Are able to avoid obstacles.
+- [ ] Keep track of score.
 
-### Wireframes
+![FlappyCat Demo](assets/flappycat copy.gif)
 
-This game will consist of a single screen with a space bar controlling the gravity of the cat. It will also have links
-to my GitHub and LinkedIn pages. Score will be displayed on the top and there will be a pause button on the top-right corner.
+### Implementation
 
-![wireframes](assets/FlappyCatWireFrame.png)
+To build this game, I used CSS and HTML5 Canvas. For the main character, I used a custom sprite sheet and animations were achieved through `window.requestAnimationFrame`. To switch to another sprite animation, I used a tick counter to keep track of when to change animation as follows:
 
-### Architecture and Technologies
+```js
+fall(ctx) {
+  this.tickCount += 1;
 
-This project will be implemented with the following technologies:
+  if (this.dir === "down") {
+    if (this.tickCount > 2) {
+      if (this.frameIndex < 7) {
+        this.frameIndex = (this.frameIndex + 1);
+      }
+      this.tickCount = 0;
+    }
+  }
+```
+The player jumps through vanilla JS `document.addEventListener`, which listen for keypresses that activate/deactivate the main game modal, cause the bird to jump and toggle the sound.
 
-- `JavaScript` for game logic,
-- `Canvas` with `HTML5 ` for effects rendering,
-- `Webpack` to bundle js files.
-
-### Implementation Timeline
-
-**Day 1**: Setup all necessary Node modules, including getting webpack up and running. Doing research on all the libraries I want to use including the physics engine I want to implement, which will handle the gravitational logistics of my cat.
-
-**Day 2**: Work on rendering the board, cat, trees and pipes.
-
-**Day 3**: Implementing the physics for my cat and game logic.
-
-**Day 4**: Install the controls for the user to interact with the game.  Style the frontend, making it polished and professional. Further, I want to fine tune the controls to set a standard difficulty for the game.
-
-
-### Bonus Features
-
-- [ ] Have a running live scoreboard of all users to play the game.
-- [ ] Toggle between day and night while playing the game.
+Collision detection was perhaps the most technically challenging aspect of the game for me. Since I was using one image for pipe rendering to keep the distance between them consistent, I had to come up with a mathematical correlation between the end of the top pipe and bottom pipe. Collision is based on detecting the canvas position of the bird and the pipe. 
