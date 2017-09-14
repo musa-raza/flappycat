@@ -38,4 +38,4 @@ fall(ctx) {
 ```
 The player jumps through vanilla JS `document.addEventListener`, which listen for keypresses that activate/deactivate the main game modal, cause the bird to jump and toggle the sound.
 
-Collision detection was perhaps the most technically challenging aspect of the game for me. Since I was using one image for pipe rendering to keep the distance between them consistent, I had to come up with a mathematical correlation between the end of the top pipe and bottom pipe. Collision is based on detecting the canvas position of the bird and the pipe. 
+Collision detection was perhaps the most technically challenging aspect of the game for me. Since I was using one image for pipe rendering to keep the distance between them consistent, I had to come up with a mathematical correlation between the end of the top pipe and bottom pipe. Collision is based on detecting the canvas position of the cat and the pipe. 
