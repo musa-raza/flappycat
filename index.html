@@ -9,6 +9,19 @@
         margin: 0 auto;
       }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
+    <script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDiSHblFe97aCuVoNFcJas541mUhRA3Vew",
+    authDomain: "flappycat-d51b5.firebaseapp.com",
+    databaseURL: "https://flappycat-d51b5.firebaseio.com",
+    projectId: "flappycat-d51b5",
+    storageBucket: "flappycat-d51b5.appspot.com",
+    messagingSenderId: "462408002979"
+  };
+  firebase.initializeApp(config);
+</script>
     <script type="text/javascript" src="./bundle.js">
     </script>
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
@@ -36,6 +49,16 @@
     </div>
     <div class="canv-div">
       <canvas id="canvas" height="640" width="480"></canvas>
+    </div>
+    <div class="modal score-div show">
+      <div class="gameparent score-div show">
+        <div class="info score-div show">
+          <h2>You lost :(</h2>
+          <h3>Score: </h3>
+          <p>Submit your name and hit enter to submit your high-score!</p>
+          <input type="text" placeholder="Name..." id="score-input" value="">
+        </div>
+      </div>
     </div>
     <audio id="bgmusic" src="./assets/gamemusic.mp3">
     </audio>

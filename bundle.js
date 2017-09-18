@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   window.startFlap = function (e) {
-    if (e.keyCode === 32) {
+    if (e.keyCode === 13) {
       var newerGame = new _game2.default();
       gameView.game = newerGame;
       gameView.closeModal();
@@ -178,7 +178,9 @@ document.addEventListener('DOMContentLoaded', function () {
       document.removeEventListener('keypress', window.startFlap);
     }
   };
-  document.addEventListener('keypress', window.startFlap, window.pause);
+  if (!gameView.highscoretable) {
+    document.addEventListener('keypress', window.startFlap);
+  }
 });
 
 /***/ }),
@@ -230,8 +232,9 @@ var Game = function () {
     this.score = 0;
     this.addPipes();
     this.addForeGround();
-    this.updateScore();
     this.over = false;
+    this.updateScore = this.updateScore.bind(this);
+    this.updateScore();
   }
 
   _createClass(Game, [{
@@ -274,14 +277,16 @@ var Game = function () {
     key: 'updateScore',
     value: function updateScore() {
       var orig = this;
-      window.setInterval(function () {
-        orig.score += 1;
-      }, 1500);
+      if (!this.over) {
+        this.scoreInt = window.setInterval(function () {
+          orig.score += 1;
+        }, 1500);
+      }
     }
   }, {
     key: 'drawScore',
     value: function drawScore(ctx) {
-      if (this.bird[0].alive) {
+      if (!this.over) {
         ctx.font = '48px "Press Start 2P"';
         ctx.fillStyle = "white";
         ctx.fillText(this.score, 240, 90);
@@ -607,8 +612,8 @@ var Bird = function (_Sprite) {
     value: function collideWith(pipe) {
 
       if ((this.dY + 10 < pipe.topPipeY || this.dY - 5 > pipe.botPipeY || this.dY - 20 + this.dHeight > pipe.botPipeY) && (this.dX - 5 + this.dWidth > pipe.dX && this.dX - 5 + this.dWidth < pipe.dX + pipe.dWidth || this.dX - 5 > pipe.dX && this.dX - 5 < pipe.dX + pipe.dWidth) || this.dY - 5 + this.dHeight >= 598) {
-        this.alive = false;
         this.game.over = true;
+        this.alive = false;
         window.gameoverMusic();
       }
     }
@@ -714,6 +719,8 @@ var GameView = function () {
     this.ctx.fillStyle = "white";
     this.addJump = this.addJump.bind(this);
     this.addJump();
+    this.scores = [];
+    this.highscoretable = false;
   }
 
   _createClass(GameView, [{
@@ -736,7 +743,9 @@ var GameView = function () {
       document.addEventListener('keypress', function (e) {
         if (e.keyCode === 32) {
           _this.bird.jump(e, _this.ctx);
-          jumpmusic.play();
+          if (_this.bird.alive) {
+            jumpmusic.play();
+          }
         }
         // jumpmusic.currentTime = 0;
       });
@@ -771,6 +780,52 @@ var GameView = function () {
       });
     }
   }, {
+    key: "startHighScoreModal",
+    value: function startHighScoreModal() {
+      this.highscoretable = true;
+      var modal = document.getElementsByClassName('score-div');
+      var text = document.getElementById('score-input');
+      text.value = "";
+      [].forEach.call(modal, function (el) {
+        el.className = el.className.replace('hidden', 'show');
+      });
+    }
+  }, {
+    key: "closeHighScoreModal",
+    value: function closeHighScoreModal() {
+      this.highscoretable = false;
+      var modal = document.getElementsByClassName('score-div');
+      [].forEach.call(modal, function (el) {
+        el.className = el.className.replace('show', 'hidden');
+      });
+    }
+  }, {
+    key: "receiveScores",
+    value: function receiveScores() {
+      var scoresRef = firebase.database().ref("scores");
+      scoresRef.orderByValue().limitToLast(5).on("child_added", function (snapshot) {
+        snapshot.forEach(function (data) {
+          console.log(data.val());
+          console.log(data.key);
+        });
+      });
+    }
+  }, {
+    key: "submitScore",
+    value: function submitScore(e) {
+      var score = this.game.score;
+      var userName = e.target.value;
+      document.removeEventListener('keypress', window.startFlap);
+      if (e.keyCode === 13) {
+        firebase.database().ref('scores/').push({
+          score: score,
+          username: userName
+        });
+      }
+      document.removeEventListener('keypress', this.submitScore);
+      document.addEventListener('keypress', window.startFlap);
+    }
+  }, {
     key: "animate",
     value: function animate(time) {
       var timeDelta = time - this.lastTime;
@@ -779,11 +834,16 @@ var GameView = function () {
         this.game.draw(this.ctx);
         this.lastTime = time;
         this.bird.fall(this.ctx);
+        this.closeHighScoreModal();
         requestAnimationFrame(this.animate.bind(this));
       } else if (!this.bird.alive) {
-        this.startModal();
         this.endBgMusic();
-        document.addEventListener('keypress', window.startFlap);
+        this.game.over = true;
+        clearInterval(this.game.scoreInt);
+        cancelAnimationFrame(this.animate.bind(this));
+        this.startHighScoreModal();
+        this.receiveScores();
+        document.addEventListener('keypress', this.submitScore.bind(this));
       }
     }
   }]);

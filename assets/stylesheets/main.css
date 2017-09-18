@@ -20,7 +20,7 @@
 }
 
 .hidden {
-  opacity: 0;
+  display: none;
 }
 .modal {
   background: rgba(0, 0, 0, 0.5);
@@ -61,6 +61,10 @@
 
   width: 80%;
   line-height: 1.8;
+}
+
+#score-input {
+  height: 40px;
 }
 
 .info img {
