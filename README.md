@@ -17,7 +17,7 @@ In FlappyCat, users are able to:
 - [ ] Are able to avoid obstacles.
 - [ ] Keep track of score.
 
-![FlappyCat Demo](./assets/flappycat copy.gif)
+![FlappyCat Demo](./assets/flappycatcopy.gif)
 
 ### Implementation
 
