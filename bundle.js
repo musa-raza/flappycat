@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var over = document.getElementById("oversound");
     var bgmusic = document.getElementById("bgmusic");
     var jumpmusic = document.getElementById("jumpsound");
-    if (e.keyCode === 115 && !over.muted && !bgmusic.muted && !jumpmusic.muted) {
+    if (e.keyCode === 115 && !over.muted && !bgmusic.muted && !jumpmusic.muted && !gameView.highscoretable) {
       over.muted = true;
       bgmusic.muted = true;
       jumpmusic.muted = true;
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   window.startFlap = function (e) {
-    if (e.keyCode === 13) {
+    if (e.keyCode === 32) {
       var newerGame = new _game2.default();
       gameView.game = newerGame;
       gameView.closeModal();
@@ -178,9 +178,8 @@ document.addEventListener('DOMContentLoaded', function () {
       document.removeEventListener('keypress', window.startFlap);
     }
   };
-  if (!gameView.highscoretable) {
-    document.addEventListener('keypress', window.startFlap);
-  }
+
+  document.addEventListener('keypress', window.startFlap);
 });
 
 /***/ }),
@@ -721,6 +720,7 @@ var GameView = function () {
     this.addJump();
     this.scores = [];
     this.highscoretable = false;
+    this.submitScore = this.submitScore.bind(this);
   }
 
   _createClass(GameView, [{
@@ -763,6 +763,7 @@ var GameView = function () {
       [].forEach.call(modal, function (el) {
         el.className = el.className.replace('hidden', 'show');
       });
+      document.addEventListener('keypress', window.startFlap);
     }
   }, {
     key: "backgroundMusic",
@@ -789,6 +790,8 @@ var GameView = function () {
       [].forEach.call(modal, function (el) {
         el.className = el.className.replace('hidden', 'show');
       });
+      this.receiveScores();
+      debugger;
     }
   }, {
     key: "closeHighScoreModal",
@@ -803,11 +806,25 @@ var GameView = function () {
     key: "receiveScores",
     value: function receiveScores() {
       var scoresRef = firebase.database().ref("scores");
-      scoresRef.orderByValue().limitToLast(5).on("child_added", function (snapshot) {
-        snapshot.forEach(function (data) {
-          console.log(data.val());
-          console.log(data.key);
+      scoresRef.orderByChild("score").limitToLast(5).on("value", function (snapshot) {
+        var score = snapshot.val();
+        var values = Object.values(score);
+        values.sort(function (a, b) {
+          return b.score - a.score;
         });
+        var scorelistings = document.querySelectorAll('.scorelist');
+        for (var i = 0; i < scorelistings.length; i++) {
+          scorelistings[i].remove();
+        }
+        var uL = document.getElementById('disp-scores');
+        for (var _i = 0; _i < values.length; _i++) {
+          var name = values[_i].username;
+          var performance = values[_i].score;
+          var lI = document.createElement('li');
+          lI.className = "scorelist";
+          lI.innerHTML = name + " " + performance;
+          uL.appendChild(lI);
+        }
       });
     }
   }, {
@@ -815,15 +832,18 @@ var GameView = function () {
     value: function submitScore(e) {
       var score = this.game.score;
       var userName = e.target.value;
-      document.removeEventListener('keypress', window.startFlap);
+      // document.removeEventListener('keypress', window.startFlap);
       if (e.keyCode === 13) {
         firebase.database().ref('scores/').push({
           score: score,
           username: userName
         });
+        this.startModal();
+        this.closeHighScoreModal();
+        document.removeEventListener('keypress', this.submitScore);
+        document.addEventListener('keypress', window.startFlap);
       }
-      document.removeEventListener('keypress', this.submitScore);
-      document.addEventListener('keypress', window.startFlap);
+      // document.removeEventListener('keypress', this.submitScore);
     }
   }, {
     key: "animate",
@@ -842,8 +862,7 @@ var GameView = function () {
         clearInterval(this.game.scoreInt);
         cancelAnimationFrame(this.animate.bind(this));
         this.startHighScoreModal();
-        this.receiveScores();
-        document.addEventListener('keypress', this.submitScore.bind(this));
+        document.addEventListener('keypress', this.submitScore);
       }
     }
   }]);
