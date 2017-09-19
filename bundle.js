@@ -791,7 +791,6 @@ var GameView = function () {
         el.className = el.className.replace('hidden', 'show');
       });
       this.receiveScores();
-      debugger;
     }
   }, {
     key: "closeHighScoreModal",
@@ -832,8 +831,12 @@ var GameView = function () {
     value: function submitScore(e) {
       var score = this.game.score;
       var userName = e.target.value;
+      debugger;
       // document.removeEventListener('keypress', window.startFlap);
       if (e.keyCode === 13) {
+        if (userName === "" || userName === undefined) {
+          userName = "Anonymous";
+        }
         firebase.database().ref('scores/').push({
           score: score,
           username: userName
